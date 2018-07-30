@@ -9,7 +9,7 @@ gen:
 .PHONY: build
 build:
 	operator-sdk build docker.io/${USER}/${OP_NAME}:${DOCK_TAG}
-	docker push docker.io/$USER/${OP_NAME}:${DOCK_TAG}
+	docker push docker.io/${USER}/${OP_NAME}:${DOCK_TAG}
 
 .PHONY: deploy
 deploy:
