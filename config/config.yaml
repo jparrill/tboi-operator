@@ -1,0 +1,3 @@
+apiVersion: tboi.example.com/v1alpha1
+kind: Item
+projectName: tboi-operator

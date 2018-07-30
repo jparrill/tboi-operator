@@ -1,0 +1,4 @@
+apiVersion: "tboi.example.com/v1alpha1"
+kind: "Item"
+metadata:
+  name: "example"
