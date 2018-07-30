@@ -22,8 +22,9 @@ type Item struct {
 }
 
 type ItemSpec struct {
-	// Fill me
+	ItemName string `json:"itemName"`
+	ItemUrl  string `json:"itemUrl"`
 }
 type ItemStatus struct {
-	// Fill me
+	ApiPods []string `"json:apiPods"`
 }

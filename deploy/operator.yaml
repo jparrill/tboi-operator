@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tboi-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: tboi-operator
+  template:
+    metadata:
+      labels:
+        name: tboi-operator
+    spec:
+      containers:
+        - name: tboi-operator
+          image: docker.io/padajuan/tboi-operator:latest
+          ports:
+          - containerPort: 60000
+            name: metrics
+          command:
+          - tboi-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: OPERATOR_NAME
+              value: "tboi-operator"
