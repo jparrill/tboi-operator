@@ -1,6 +1,8 @@
 apiVersion: "tboi.example.com/v1alpha1"
 kind: "Item"
 metadata:
-  ItemName: "Godhead"
-  ItemUrl: "https://bindingofisaacrebirth.gamepedia.com/Godhead"
-  ItemSize: "3"
+    name: "tboi-items"
+spec:
+    ItemName: "Godhead"
+    ItemUrl: "https://bindingofisaacrebirth.gamepedia.com/Godhead"
+    ItemSize: 3
