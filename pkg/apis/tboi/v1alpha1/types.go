@@ -26,6 +26,7 @@ type ItemSpec struct {
 	ItemUrl  string `json:"itemUrl"`
 	ItemSize int32  `json:"itemSize"`
 }
+
 type ItemStatus struct {
 	ApiPods []string `"json:apiPods"`
 }
