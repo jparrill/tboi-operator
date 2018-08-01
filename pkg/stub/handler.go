@@ -43,6 +43,13 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 			return err
 		}
 
+		// Ensure the deployment size is the same as the spec ItemSize object
+		err = checkTboiReplicas(dc, tboi)
+		if err != nil {
+			logrus.Errorf("Error checking/updating replicas : %v", err)
+			return err
+		}
+
 		logrus.Infof("Finish Handling")
 	}
 	return nil
@@ -52,6 +59,32 @@ func getPodLabels(name string) map[string]string {
 	app := "tboi-items-app"
 	logrus.Debug("Returning labels")
 	return map[string]string{"app": app, "name": name}
+}
+
+func checkTboiReplicas(dc *appsv1.Deployment, tboi *v1alpha1.Item) error {
+	// Get dc from NS
+	err := sdk.Get(dc)
+	if err != nil {
+		logrus.Errorf("Failed to get deployment : %v", err)
+		return err
+	}
+
+	// Extract ItemSize object from CR
+	ItemSize := tboi.Spec.ItemSize
+	logrus.Infof("CR ItemSize: %d, DC Replicas: %d", ItemSize, *dc.Spec.Replicas)
+
+	// If not equal, update the DC with CR spec
+	if *dc.Spec.Replicas != ItemSize {
+		logrus.Infof("Need to update replicas from %d to %d", *dc.Spec.Replicas, ItemSize)
+		dc.Spec.Replicas = &ItemSize
+		err = sdk.Update(dc)
+		if err != nil {
+			logrus.Errorf("Failed to update deployment : %v", err)
+			return err
+		}
+	}
+
+	return err
 }
 
 func dcTboiItems(h *v1alpha1.Item) *appsv1.Deployment {
