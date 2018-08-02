@@ -180,3 +180,22 @@ And here you have some Screenshots about the status:
     - https://github.com/mvazquezc/ostack-meetup-operator
     - https://github.com/operator-framework/getting-started
 	- https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md
+
+
+## References
+
+- [Getting Started](https://github.com/operator-framework/getting-started)
+- [Operators SDK User Guide](https://github.com/operator-framework/operator-sdk/blob/master/doc/user-guide.md)
+- [OPS SDK Main repo](https://github.com/operator-framework/operator-sdk)
+- [Python Memcached Operator](https://github.com/kbst/memcached/blob/master/manifests/memcached.json)
+- [Awesome Operators](https://github.com/operator-framework/awesome-operators)
+- [K8s Operator SDK Guide](https://banzaicloud.com/blog/operator-sdk/)
+
+## References Custom Controllers
+
+- https://engineering.bitnami.com/articles/a-deep-dive-into-kubernetes-controllers.html
+- https://engineering.bitnami.com/articles/kubewatch-an-example-of-kubernetes-custom-controller.html
+- https://itnext.io/under-the-hood-of-the-operator-sdk-eebc8fdeebbf
+- https://github.com/operator-framework/awesome-operators
+- https://resources.coreos.com/youtube-coreos-fest-2017/writing-a-custom-controller-extending-the-functionality-of-your-cluster
+- https://admiralty.io/kubernetes-custom-resource-controller-and-operator-development-tools.html

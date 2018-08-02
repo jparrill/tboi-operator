@@ -6,3 +6,7 @@ spec:
     ItemName: "Godhead"
     ItemUrl: "https://bindingofisaacrebirth.gamepedia.com/Godhead"
     ItemSize: 3
+    CreateRoute: True
+    Route:
+        RouteDomain: "127.0.0.1.nip.io"
+        RoutePath: "/"

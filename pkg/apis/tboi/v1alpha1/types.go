@@ -22,9 +22,14 @@ type Item struct {
 }
 
 type ItemSpec struct {
-	ItemName string `json:"itemName"`
-	ItemUrl  string `json:"itemUrl"`
-	ItemSize int32  `json:"itemSize"`
+	ItemName    string `json:"itemName"`
+	ItemUrl     string `json:"itemUrl"`
+	ItemSize    int32  `json:"itemSize"`
+	CreateRoute bool   `json:"createRoute"`
+	Route       struct {
+		RouteDomain string `json:"routeDomain"`
+		RoutePath   string `json:"routePath"`
+	} `json:route`
 }
 
 type ItemStatus struct {

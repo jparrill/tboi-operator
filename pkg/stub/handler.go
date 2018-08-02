@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	extensionsbetav1 "k8s.io/api/extensions/v1beta1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -43,6 +44,14 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 			return err
 		}
 
+		// Create the route if it doesn't exist
+		ing_cont := routeTboiItems(svc, tboi)
+		err = sdk.Create(ing_cont)
+		if err != nil && !apierrors.IsAlreadyExists(err) {
+			logrus.Errorf("Failed to create route : %v", err)
+			return err
+		}
+
 		// Ensure the deployment size is the same as the spec ItemSize object
 		err = checkTboiReplicas(dc, tboi)
 		if err != nil {
@@ -62,7 +71,7 @@ func getPodLabels(name string) map[string]string {
 }
 
 func checkTboiReplicas(dc *appsv1.Deployment, tboi *v1alpha1.Item) error {
-	// Get dc from NS
+	// Validate that the dc exists
 	err := sdk.Get(dc)
 	if err != nil {
 		logrus.Errorf("Failed to get deployment : %v", err)
@@ -149,7 +158,7 @@ func dcTboiItems(h *v1alpha1.Item) *appsv1.Deployment {
 			},
 		},
 	}
-	logrus.Infof("DC: %s", dc)
+	logrus.Debugf("DC: %s", dc)
 	logrus.Infof("DC Spec Finished")
 	return dc
 }
@@ -177,7 +186,48 @@ func svcTboiItems(h *v1alpha1.Item) *corev1.Service {
 			},
 		},
 	}
-	logrus.Infof("SVC: %s", svc)
+	logrus.Debugf("SVC: %s", svc)
 	logrus.Infof("SVC Spec Finished")
 	return svc
+}
+
+func routeTboiItems(svc *corev1.Service, h *v1alpha1.Item) *extensionsbetav1.Ingress {
+	logrus.Infof("Making Ingress Spec")
+	Name := svc.ObjectMeta.Name
+	Namespace := svc.ObjectMeta.Namespace
+	FullRoute := Name + "-" + Namespace + "." + h.Spec.Route.RouteDomain
+	logrus.Infof("Route: %s", h.Spec.Route)
+
+	ing_cont := &extensionsbetav1.Ingress{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "extensions/v1beta1",
+			Kind:       "Ingress",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      svc.ObjectMeta.Name,
+			Namespace: svc.ObjectMeta.Namespace,
+		},
+		Spec: extensionsbetav1.IngressSpec{
+			Rules: []extensionsbetav1.IngressRule{{
+				Host: FullRoute,
+				IngressRuleValue: extensionsbetav1.IngressRuleValue{
+					HTTP: &extensionsbetav1.HTTPIngressRuleValue{
+						Paths: []extensionsbetav1.HTTPIngressPath{{
+							Path: h.Spec.Route.RoutePath,
+							Backend: extensionsbetav1.IngressBackend{
+								ServiceName: svc.ObjectMeta.Name,
+								ServicePort: intstr.IntOrString{Type: intstr.Int, IntVal: svc.Spec.Ports[0].Port},
+							},
+						}},
+					},
+				},
+			}},
+		},
+	}
+
+	logrus.Infof("IngressController: %v", ing_cont)
+	logrus.Infof("Ingress Spec Finished")
+
+	return ing_cont
+
 }
