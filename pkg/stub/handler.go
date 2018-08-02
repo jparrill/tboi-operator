@@ -26,8 +26,6 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 	switch o := event.Object.(type) {
 	case *v1alpha1.Item:
 		tboi := o
-		logrus.Infof("Switch Object: %s", tboi)
-		logrus.Infof("Handler: %s", h)
 
 		// Create the deployment if it doesn't exist
 		dc := dcTboiItems(tboi)
